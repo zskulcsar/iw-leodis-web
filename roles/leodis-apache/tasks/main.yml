@@ -1,0 +1,14 @@
+---
+# tasks file for leodis-apache
+
+- name: Include distribution specific variables
+  include_vars: "{{ ansible_distribution }}.yml"
+
+- include: Ubuntu.yml
+  when: ansible_distribution == "Ubuntu"
+
+- action: uri url=http://{{inventory_hostname}} return_content=yes
+  register: webpage
+
+- action: fail msg="Please check logs for more details"
+  when: "'Leodis' not in webpage.content"

@@ -1,0 +1,11 @@
+---
+# handlers file for leodis-apache role
+
+- name: start httpd
+  command: /etc/init.d/httpd -k start
+
+- name: restart httpd
+  command: /etc/init.d/httpd -k restart
+
+- name: stop httpd
+  command: /etc/init.d/httpd -k stop

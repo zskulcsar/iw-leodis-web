@@ -1,0 +1,92 @@
+---
+## Tasks what are common across the various distributions
+
+- name: Create group for apache
+  group:
+    name: "{{apache_group}}"
+    state: present
+
+- name: Create system-user for apache
+  user:
+    name: "{{apache_user}}"
+    group: "{{apache_group}}"
+    system: yes
+    state: present
+
+- name: Copy apache binary
+  copy:
+    src: "bin/{{apache_binary}}"
+    dest: "/tmp/{{apache_binary}}"
+
+- name: Ensure installation directory exists
+  file:
+    path: "{{apache_installation_dir}}"
+    state: directory
+    owner: "{{apache_user}}"
+    group: "{{apache_group}}"
+
+- name: Ensure apache docroot directory exists
+  file:
+    path: "{{apache_docroot}}"
+    state: directory
+    owner: "{{apache_user}}"
+    group: "{{apache_group}}"
+
+# Hack because of unarchive. See issue https://github.com/ansible/ansible-modules-core/issues/2936
+- name: Check for previous apache installation
+  command: ls -l /opt/apache
+  register: apache_files
+
+- name: Untar apache archive
+  command: tar -xjf /tmp/{{apache_binary}} -C {{apache_installation_dir}}
+  when: apache_files.stdout.find("managed_by_ansible") == -1
+
+- name: Create managed_by file
+  file:
+    path: "{{apache_installation_dir}}/managed_by_ansible"
+    state: touch
+    owner: "{{apache_user}}"
+    group: "{{apache_group}}"
+# Hack because of unarchive. See issue https://github.com/ansible/ansible-modules-core/issues/2936
+
+- name: Ensure new installation is owned by apache user
+  file:
+    path: "{{apache_installation_dir}}"
+    owner: "{{apache_user}}"
+    group: "{{apache_group}}"
+    recurse: true
+
+- name: Link apachectl as httpd under init.d
+  file:
+    state: link
+    src: "{{apache_installation_dir}}/bin/apachectl"
+    name: "/etc/init.d/httpd"
+
+- name: Copy apache configuration files
+  template:
+    src: "templates/{{item}}.j2"
+    dest: "{{apache_installation_dir}}/conf/{{item}}"
+    owner: "{{apache_user}}"
+    group: "{{apache_group}}"
+    mode: "0644"
+  with_items:
+    - httpd.conf
+    - magic
+    - mime.types
+    - extra/httpd-autoindex.conf
+    - extra/httpd-dav.conf
+    - extra/httpd-default.conf
+    - extra/httpd-info.conf
+    - extra/httpd-languages.conf
+    - extra/httpd-manual.conf
+    - extra/httpd-mpm.conf
+    - extra/httpd-multilang-errordoc.conf
+    - extra/httpd-userdir.conf
+    - extra/httpd-vhosts.conf
+  notify:
+    - restart httpd
+
+- name: Make sure Apache2 as httpd is started & enabled
+  service: name=httpd enabled=yes
+  notify:
+    - start httpd

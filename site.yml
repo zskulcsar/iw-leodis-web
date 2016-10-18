@@ -1,0 +1,9 @@
+---
+# Main playbook
+
+- name: Leodis webserver provisioning
+  hosts: webserver
+  become: yes
+
+  roles:
+    - leodis-apache

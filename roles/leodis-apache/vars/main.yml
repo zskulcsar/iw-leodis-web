@@ -1,0 +1,6 @@
+---
+# vars file for leodis-apache
+apache_group: www-data
+apache_user: www-data
+
+apache_installation_dir: /opt/apache

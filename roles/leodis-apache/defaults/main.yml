@@ -1,0 +1,5 @@
+---
+# defaults file for leodis-apache
+
+apache_binary: apache-2.2.4.tar.bz2
+apache_docroot: /opt/web/www
