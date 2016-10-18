@@ -5,7 +5,7 @@ The main issues highlihted below.
 
 ### Assumptions
 * All the webservers in the Leodis deployment are configured the same
-* It is assumed that apache configuration is deliberately wrong (ie.: not able to server HTTP status pages) - normally this should be brought up with the sys admin team
+* It is assumed that apache configuration is deliberately wrong (ie.: not able to serve HTTP status pages) - normally this should be brought up with the ops team
 
 ### Issues with the current install
 * Apache is deployed into a non-standard location :: this is left untouched but parameter has been added to the role
@@ -13,7 +13,7 @@ The main issues highlihted below.
 * No dedicated user for apache :: the role creates the predefined user
 * The deployment is owned by root :: the apache config has been modified to use the preconfigured user (parameter driven)
 * Apache is being run as root :: the apache config has been modified to use the preconfigured user (parameter driven)
-* No log rotations is specified for the access / error_log :: not part of the role, suggestion for the ops team would be to extend with this 
+* No log rotation is specified for the access / error_log :: not part of the role, suggestion for the ops team would be to extend with this 
 
 ### Usage
 You must have Ansible 2.1 installed. [Ansible Installation](http://docs.ansible.com/ansible/intro_installation.html)
