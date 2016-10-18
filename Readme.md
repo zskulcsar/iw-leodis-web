@@ -13,7 +13,8 @@ The main issues highlihted below.
 * No dedicated user for apache :: the role creates the predefined user
 * The deployment is owned by root :: the apache config has been modified to use the preconfigured user (parameter driven)
 * Apache is being run as root :: the apache config has been modified to use the preconfigured user (parameter driven)
-* No log rotation is specified for the access / error_log :: not part of the role, suggestion for the ops team would be to extend with this 
+* No log rotation is specified for the access / error_log :: not part of the role, suggestion for the ops team would be to extend with this
+* No ntp synchronization on the server :: not addressed here, but should be part of the wider provisioning script
 
 ### Usage
 You must have Ansible 2.1 installed. [Ansible Installation](http://docs.ansible.com/ansible/intro_installation.html)
